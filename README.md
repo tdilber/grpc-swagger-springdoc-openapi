@@ -10,6 +10,8 @@ and above). I am also using this library net.devh:**grpc-spring-boot-starter**:2
 I am using on my open-source **microservice project**. You can see how to work.
 
 https://github.com/tdilber/anouncy/blob/master/backend/location/src/main/java/com/beyt/anouncy/location/config/GrpcSwaggerConfig.java
+![Screen Shot 2022-12-17 at 23 41 10](https://user-images.githubusercontent.com/10117616/208265307-b96f147d-8880-4531-8ba8-ee04373def8d.png)
+![Screen Shot 2022-12-17 at 23 39 51](https://user-images.githubusercontent.com/10117616/208265285-abc44251-2f77-45d7-914d-0fb469a45e55.png)
 
 ## Usage:
 
@@ -100,18 +102,18 @@ Standart swagger dependency for Spring Boot 3.
 
 ## How To Work
 
-I used Byte-Buddy tool for creating RestController with POST endpoint for every gRPC service method.
+I used Byte-Buddy tool for creating RestController with **POST** endpoints for every gRPC service methods.
 
 - First I am converting to all method returns and method parameters objects (proto object what have builders) to POJOs.
 - Second I am converting all services method in the single Rest Controller class with the POJOs. (With method
   interceptor.)
-- Third intercetor does this 4 step =>
+- Third intercetor does this 4 step when request came =>
 
 ```
 1- convert param POJO => Proto Object
 2- invoke Proto Client With Proto Object (Returning Proto Object)
 3- convert Returned Proto Object to Return POJO object
-4- return The POJO object. 
+4- return The POJO object to the endpoint result
 ```
 
 **Note:** This conversion is using json serialization. 
