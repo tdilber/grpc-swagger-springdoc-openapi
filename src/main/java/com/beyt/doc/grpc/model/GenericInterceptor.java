@@ -1,7 +1,5 @@
 package com.beyt.doc.grpc.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -25,16 +23,23 @@ public class GenericInterceptor {
     private Class<?> clazz;
     private Class<?> controllerType;
     private Class<? extends Message> paramTypePTO;
-    private static ObjectMapper converter;
+    private final static ObjectMapper converter;
+    private final static FilterProvider filters;
 
-    public GenericInterceptor(Class<?> clazz, Class<? extends Message> paramTypePTO) {
-        this.clazz = clazz;
-        this.paramTypePTO = paramTypePTO;
+    static {
         converter = new ObjectMapper()
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
-        converter.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        SimpleBeanPropertyFilter theFilter = SimpleBeanPropertyFilter
+                .serializeAllExcept("unknownFields", "memoizedIsInitialized");
+        filters = new SimpleFilterProvider()
+                .addFilter("myFilter", theFilter);
+    }
+
+    public GenericInterceptor(Class<?> clazz, Class<? extends Message> paramTypePTO) {
+        this.clazz = clazz;
+        this.paramTypePTO = paramTypePTO;
     }
 
     public void setControllerType(Class<?> controllerType) {
@@ -46,18 +51,13 @@ public class GenericInterceptor {
     public Object intercept(@AllArguments Object[] allArguments,
                             @This Object thiz,
                             @Origin Method method) {
-        Object argument = allArguments[0];
-        String s = "TEST " + argument.getClass().getName() + " " + argument;
         Class<?> returnTypeDTO = method.getReturnType();
-        SimpleBeanPropertyFilter theFilter = SimpleBeanPropertyFilter
-                .serializeAllExcept("unknownFields", "memoizedIsInitialized");
-        FilterProvider filters = new SimpleFilterProvider()
-                .addFilter("myFilter", theFilter);
 
         String dtoStr = converter.writer(filters).writeValueAsString(allArguments[0]);
-        Message.Builder newBuilder = (Message.Builder) paramTypePTO.getDeclaredMethod("newBuilder").invoke(null);
-        Object param = fromJson(newBuilder, dtoStr, paramTypePTO);
 
+        Message.Builder newBuilder = (Message.Builder) paramTypePTO.getDeclaredMethod("newBuilder").invoke(null);
+
+        Object param = fromJson(newBuilder, dtoStr, paramTypePTO);
 
         Object client = controllerType.getMethod("getClient").invoke(thiz);
 
@@ -75,9 +75,5 @@ public class GenericInterceptor {
 
     public static String toJson(MessageOrBuilder messageOrBuilder) throws IOException {
         return JsonFormat.printer().print(messageOrBuilder);
-    }
-
-    public void setClazz(Class<?> clazz) {
-        this.clazz = clazz;
     }
 }
