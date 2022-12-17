@@ -19,7 +19,6 @@ https://github.com/tdilber/anouncy/blob/master/backend/location/src/main/java/co
 ### 1
 
 ```xml
-
 <dependencies>
     ...
     <dependency>
@@ -30,11 +29,11 @@ https://github.com/tdilber/anouncy/blob/master/backend/location/src/main/java/co
 </dependencies>
 
 <repositories>
-<repository>
-    <id>github2</id>
-    <name>GitHub Apache Maven Packages</name>
-    <url>https://maven.pkg.github.com/tdilber/grpc-swagger-springdoc-openapi</url>
-</repository>
+    <repository>
+        <id>github2</id>
+        <name>GitHub Apache Maven Packages</name>
+        <url>https://maven.pkg.github.com/tdilber/grpc-swagger-springdoc-openapi</url>
+    </repository>
 </repositories>
 ```
 
@@ -52,7 +51,6 @@ There are 2 type of usage:
 - createGrpcControllerSafely => When exception occurred then create default class for not throw exception.
 
 ```java
-
 @Configuration
 public class GrpcSwaggerConfig {
 
@@ -94,7 +92,6 @@ grpc:
 Standart swagger dependency for Spring Boot 3.
 
 ```xml
-
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
