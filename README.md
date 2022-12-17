@@ -4,8 +4,7 @@ Debugging gRPC clients with swagger-ui on Spring Boot 3.
 
 Swagger for gRPC Clients.
 
-**Note:** This project developed with springdoc-openapi v2.0.0 because This project Just supported on Spring Boot *
-*v3.0.0** (
+**Note:** This project developed with springdoc-openapi v2.0.0 because This project Just supported on Spring Boot **v3.0.0** (
 and above). I am also using this library net.devh:**grpc-spring-boot-starter**:2.14.0.RELEASE (thank you for that).
 
 I am using on my open-source **microservice project**. You can see how to work.
